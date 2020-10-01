@@ -138,11 +138,18 @@ v12.18.2
 
 ```
 
-> Use jshint to do syntax check of a file
->
-> > npm install -g jshint
-> > jshint myEvent.js
-> > myEvent.js: line 1, col 1, 'let' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).
-> > myEvent.js: line 3, col 1, 'let' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).
-> > myEvent.js: line 6, col 31, 'arrow function syntax (=>)' is only available in ES6 (use 'esversion: 6').
-> > myEvent.js: line 8, col 3, Missing semicolon.
+## Use jshint to do syntax check of a file
+```bash
+$ npm install -g jshint
+$ jshint myEvent.js
+myEvent.js: line 1, col 1, 'let' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).
+myEvent.js: line 3, col 1, 'let' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).
+myEvent.js: line 6, col 31, 'arrow function syntax (=>)' is only available in ES6 (use 'esversion: 6').
+myEvent.js: line 8, col 3, Missing semicolon.
+```
+
+> node does not execute our function directly it wrap it inside of a function like
+>> (function(export, require, module, __filename, __dirname) {
+>> <Our module comes here>
+>> [refer at 35th min](https://youtu.be/TlB_eWDSMt4)
+>> })
