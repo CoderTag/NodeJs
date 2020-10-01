@@ -1,6 +1,7 @@
-let counter = require('./counterModule');
-let multipleExport = require('./multipleExportModule');
-let other = require('./otherwayMultipleExportModule');
+// always store the imported module in const variable to make sure we are not changing this variable accidentally
+const counter = require('./counterModule');
+const multipleExport = require('./multipleExportModule');
+const other = require('./otherwayMultipleExportModule');
 
 counter(['aryan','laryan']);
 
