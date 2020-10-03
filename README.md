@@ -139,6 +139,7 @@ v12.18.2
 ```
 
 ## Use jshint to do syntax check of a file
+
 ```bash
 $ npm install -g jshint
 $ jshint myEvent.js
@@ -148,8 +149,44 @@ myEvent.js: line 6, col 31, 'arrow function syntax (=>)' is only available in ES
 myEvent.js: line 8, col 3, Missing semicolon.
 ```
 
-> node does not execute our function directly it wrap it inside of a function like
->> (function(export, require, module, __filename, __dirname) {
->> <Our module comes here>
->> [refer at 35th min](https://youtu.be/TlB_eWDSMt4)
->> })
+## Module Wrapper function
+
+> node does not execute our module directly it wrap it inside of a function like
+>
+> > (function(export, require, module, **filename, **dirname) {
+> > <Our module comes here> >> [refer at 35th min](https://youtu.be/TlB_eWDSMt4)
+> > })
+
+> require function above appears to be global. But actually it is not global. It is local to each module.
+
+## Avoid using Synchronous Method
+
+Many methods are available in two form - Synchronous and Asynchronous. Avoid using Synchronous methods. Use more
+Asynchronous methods. As they are non blocking
+
+```javascript
+// Avoid using Synchronous method. They have provided for simplicity.
+// All Asynchronous methods take function as their last arguments. They call this function when asynchronous
+// operation complete. This function is called callback function.
+const fs = require('fs');
+
+const files = fs.readdirSync('./');
+console.log(files)
+
+// we will get either err or files.
+fs.readdir('./',(err,files)=>{
+    if(err) console.log(`Error: ${err}`);
+    else console.log(`Result: ${files}`);
+})
+
+// Inject Error to see Error message
+fs.readdir('./notExist',(err,files)=>{
+    if(err) console.log(`Error: ${err}`);
+    else console.log(`Result: ${files}`);
+})
+
+$ node synMethonAndAsyncMethod.js
+[ 'myEvent.js', 'synMethonAndAsyncMethod.js' ]
+Error: Error: ENOENT: no such file or directory, scandir './notExist'
+Result: myEvent.js,synMethonAndAsyncMethod.js
+```
