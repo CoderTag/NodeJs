@@ -33,15 +33,57 @@ Used by PayPal, NetFlix, Uber, Walmart etc. PayPal build their Java and Spring b
 - Double the number of request server per seconds. 2x req/sec
 - 35% faster response time
 
-## Event Loop
+## node nvm and npm
 
-- Sigle Threaded
-- Support concurrency via event and callbacks.
-- **EventEmitter** class is used to bind event and event listeners.
+Install nvm (node version manager) - https://github.com/nvm-sh/nvm
+It helps to manage multiple active node.js module in a single computer.
 
-  EventEmitters ---> Events ---> Event Loop ---> Event Handlers
+```
+$nvm --version
+0.35.2
 
-## node and npm
+$node --version
+v12.14.0
+
+ $nvm list
+->     v12.14.0
+       v12.18.2
+         system
+default -> 12.14.0 (-> v12.14.0)
+node -> stable (-> v12.18.2) (default)
+stable -> 12.18 (-> v12.18.2) (default)
+
+$nvm install 12.19
+Downloading and installing node v12.19.0...
+Downloading https://nodejs.org/dist/v12.19.0/node-v12.19.0-linux-x64.tar.xz...
+################################################################################################################################################################# 100.0%
+Computing checksum with sha256sum
+Checksums matched!
+Now using node v12.19.0 (npm v6.14.8)
+
+$nvm list
+       v12.14.0
+       v12.18.2
+->     v12.19.0
+         system
+default -> 12.14.0 (-> v12.14.0)
+node -> stable (-> v12.19.0) (default)
+stable -> 12.19 (-> v12.19.0) (default)
+
+$node --version
+v12.19.0
+
+$nvm uninstall 12.14.0
+Uninstalled node v12.14.0
+
+$nvm list
+       v12.18.2
+->     v12.19.0
+         system
+default -> 12.14.0 (-> N/A)
+node -> stable (-> v12.19.0) (default)
+stable -> 12.19 (-> v12.19.0) (default)
+```
 
 npm is node package manager. All modules get installed in node_modules folder.
 
@@ -108,6 +150,8 @@ Module {
 }
 ```
 
+# Day-1
+
 ## In Linux nvm is the good tool to change the node version
 
 ```bash
@@ -159,6 +203,8 @@ myEvent.js: line 8, col 3, Missing semicolon.
 
 > require function above appears to be global. But actually it is not global. It is local to each module.
 
+# Day-2
+
 ## Avoid using Synchronous Method
 
 Many methods are available in two form - Synchronous and Asynchronous. Avoid using Synchronous methods. Use more
@@ -189,4 +235,106 @@ $ node synMethonAndAsyncMethod.js
 [ 'myEvent.js', 'synMethonAndAsyncMethod.js' ]
 Error: Error: ENOENT: no such file or directory, scandir './notExist'
 Result: myEvent.js,synMethonAndAsyncMethod.js
+```
+
+## Event
+
+One of the core concept of node is event.Its basically a signal which tells something has happened to our application.
+e.g there is a class called http to create webserver. It listen to a port. Whenever a request come to the port it raises
+an event. Event: New Request.
+Then job is response to the event. Like read the request and send right response. Refer node documentation, several classes
+of node raised different kind of event. In our code we can response to those event.
+
+## EventEmitter
+
+In event module we can find a class called EventEmitter.Its one of the core building blocks of node.Lot of classes are based on this EventEmitter.
+[Refer: myEvent.js in Day2]
+
+## Extending EventEmitter
+
+In real world hardly we interact with EventEmitter directly. Instead we create a class that has all capabilities of
+EventEmitter and use that Class in our code. [Refer: app.js and logger.js in Day-2]
+
+## Event Loop
+
+- Sigle Threaded
+- Support concurrency via event and callbacks.
+- **EventEmitter** class is used to bind event and event listeners.
+
+  EventEmitters ---> Events ---> Event Loop ---> Event Handlers
+
+# Day-3
+
+## HTTP Module
+
+```javascript
+const http = require("http");
+
+// This server is EventEmitter
+const server = http.createServer();
+
+// From browser try localhost:3000. Console we can find "connection" event triggered
+server.on("connection", (socket) => {
+  console.log("New Connection");
+});
+server.listen(3000);
+
+console.log("Listening on port 3000...");
+```
+
+In real world we will not use connection event to build http service. It's very low level to understand what happens
+internally. Similarly in real world we will not use http module to create web server. As you can see in example app.js in Day-3
+application gets complex as we add more route. As we add all route in linear way in callback function. Instead we will use express
+which uses http module internally.
+
+# Day-4
+
+## Express
+
+```bash
+$ npm init --yes
+Wrote to /home/kaushik/Public_GIT/NodeJs/Day-4/package.json:
+
+{
+  "name": "Day-4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+$ npm install express
+```
+
+```javascript
+// Express module return function. In this example we are calling it express
+const express = require('express');
+
+// when we call this function it returns object of type express. By convention we call this object app
+const appp = express()
+
+// Tnis app is having bunch of useful methods
+app.get()
+app.put()
+app.post()
+app.delete()
+
+app.get('/',(req,res)=>{ ...})
+// req object has couple of properties. Refer Express dicument to go through those property in detail.
+```
+
+### Post Method
+
+In Post method should have a body to read from. We can use body property of req object to read the body
+
+```javascript
+app.post("/courses", (req, res) => {
+  // Assuming body property has an object name
+  console.log(res.body.name);
+});
 ```
